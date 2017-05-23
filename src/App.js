@@ -1,19 +1,23 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
 import { Editor, Plain } from 'slate';
+import MarkdownPlugin from 'slate-markdown';
 
+const markdown = MarkdownPlugin();
 
 class App extends React.Component {
+  constructor (props) {
+    super(props);
+    this.state = ({ state: Plain.deserialize('hey') });
 
-  state = {
-    state: Plain.deserialize(''),
+    this.onChange = this.onChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  componentDidMount() {
-    if(window.parent != window) {
-      window.parent.postMessage({ status: "ready" }, '*');
+  componentDidMount () {
+    if (window.parent !== window) {
+      window.parent.postMessage({ status: 'ready' }, '*');
     }
 
     window.addEventListener('message', e => {
@@ -22,36 +26,36 @@ class App extends React.Component {
 
       this.setState({
         state: receivedText
-      })
-
-    }, false)
+      });
+    }, false);
   }
 
-  onChange = (state) => {
+  onChange (state) {
     // Update local state
     this.setState({ state });
 
     // Send back to SN
     const noteToSendBack = Plain.serialize(this.state.state);
 
-    if (window.parent != window) {
+    if (window.parent !== window) {
       window.parent.postMessage({text: noteToSendBack, id: window.noteId}, '*');
     }
   }
 
-  onKeydown = (event) => {
+  onKeyDown (event) {
     // Flesh this out later
     console.log(event.which);
   }
 
-  render() {
+  render () {
     return (
       <Editor
         state={this.state.state}
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
+        plugins={[markdown]}
       />
-    )
+    );
   }
 }
 
