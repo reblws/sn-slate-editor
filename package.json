@@ -5,7 +5,8 @@
   "dependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "slate": "^0.20.1"
+    "slate": "^0.20.1",
+    "slate-markdown": "^0.0.5"
   },
   "devDependencies": {
     "react-scripts": "1.0.5"
