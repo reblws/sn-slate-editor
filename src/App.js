@@ -4,13 +4,20 @@ import './App.css';
 import { Editor, Plain } from 'slate';
 import MarkdownPlugin from 'slate-markdown';
 
-const markdown = MarkdownPlugin();
+const markdownPlugin = MarkdownPlugin({
+  sizes: [
+    '2em',    // h1
+    '1.75em', // h2
+    '1.5em',  // h3
+    '1.25em', // h4
+    '1em'     // Base
+  ]
+});
 
 class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = ({ state: Plain.deserialize('hey') });
-
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
@@ -20,10 +27,9 @@ class App extends React.Component {
       window.parent.postMessage({ status: 'ready' }, '*');
     }
 
-    window.addEventListener('message', e => {
-      window.noteId = e.data.id;
-      const receivedText = Plain.deserialize(e.data.text);
-
+    window.addEventListener('message', event => {
+      window.noteId = event.data.id;
+      const receivedText = Plain.deserialize(event.data.text);
       this.setState({
         state: receivedText
       });
@@ -53,7 +59,7 @@ class App extends React.Component {
         state={this.state.state}
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
-        plugins={[markdown]}
+        plugins={[markdownPlugin]}
       />
     );
   }
