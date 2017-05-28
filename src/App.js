@@ -10,33 +10,33 @@ const markdownPlugin = MarkdownPlugin({
     '1.75em', // h2
     '1.5em',  // h3
     '1.25em', // h4
-    '1em'     // Base
-  ]
+    '1em',     // Base
+  ],
 });
 
 class App extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = ({ state: Plain.deserialize('hey') });
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (window.parent !== window) {
       window.parent.postMessage({ status: 'ready' }, '*');
     }
 
-    window.addEventListener('message', event => {
+    window.addEventListener('message', (event) => {
       window.noteId = event.data.id;
       const receivedText = Plain.deserialize(event.data.text);
       this.setState({
-        state: receivedText
+        state: receivedText,
       });
     }, false);
   }
 
-  onChange (state) {
+  onChange(state) {
     // Update local state
     this.setState({ state });
 
@@ -44,16 +44,16 @@ class App extends React.Component {
     const noteToSendBack = Plain.serialize(this.state.state);
 
     if (window.parent !== window) {
-      window.parent.postMessage({text: noteToSendBack, id: window.noteId}, '*');
+      window.parent.postMessage({ text: noteToSendBack, id: window.noteId }, '*');
     }
   }
 
-  onKeyDown (event) {
+  onKeyDown(event) {
     // Flesh this out later
     console.log(event.which);
   }
 
-  render () {
+  render() {
     return (
       <Editor
         state={this.state.state}
