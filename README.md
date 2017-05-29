@@ -8,7 +8,7 @@ Add the following under *Editor* in the Standard Notes tooltip:
 
 `https://reblws.github.io/sn-slate-editor/?name=Slate Editor`
 
-To install the editor on your computer, run `npm install`. To compile any changes made in the `src/` folder, use `npm run build`.
+To install the editor on your computer, run `npm install`. To run the editor locally, `npm start`. To compile any changes made in the `src/` folder, use `npm run build`.
 
 ## Dependencies
 
