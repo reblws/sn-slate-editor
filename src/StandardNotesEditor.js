@@ -17,6 +17,7 @@ class StandardNotesEditor extends React.Component {
     super(props);
     this.state = ({ state: Plain.deserialize('') });
     this.onChange = this.onChange.bind(this);
+    this.onDocumentChange = this.onDocumentChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
@@ -38,8 +39,10 @@ class StandardNotesEditor extends React.Component {
   onChange(state) {
     // Update local editor state
     this.setState({ state });
+  }
 
-    // Send back to SN
+  onDocumentChange() {
+    // Send changed note back to SN
     const noteToSendBack = Plain.serialize(this.state.state);
 
     if (window.parent !== window) {
@@ -69,6 +72,7 @@ class StandardNotesEditor extends React.Component {
       <Editor
         state={this.state.state}
         onChange={this.onChange}
+        onDocumentChange={this.onDocumentChange}
         onKeyDown={this.onKeyDown}
         plugins={[markdownPlugin]}
       />
