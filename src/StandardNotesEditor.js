@@ -1,6 +1,4 @@
 import React from 'react';
-import './App.css';
-
 import { Editor, Plain } from 'slate';
 import MarkdownPlugin from 'slate-markdown';
 
@@ -10,19 +8,20 @@ const markdownPlugin = MarkdownPlugin({
     '1.75em', // h2
     '1.5em',  // h3
     '1.25em', // h4
-    '1em',     // Base
+    '1em',    // h5
   ],
 });
 
-class App extends React.Component {
+class StandardNotesEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = ({ state: Plain.deserialize('hey') });
+    this.state = ({ state: Plain.deserialize('') });
     this.onChange = this.onChange.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
+    // Create SN listeners
     if (window.parent !== window) {
       window.parent.postMessage({ status: 'ready' }, '*');
     }
@@ -37,20 +36,32 @@ class App extends React.Component {
   }
 
   onChange(state) {
-    // Update local state
+    // Update local editor state
     this.setState({ state });
 
     // Send back to SN
     const noteToSendBack = Plain.serialize(this.state.state);
 
     if (window.parent !== window) {
-      window.parent.postMessage({ text: noteToSendBack, id: window.noteId }, '*');
+      window.parent.postMessage({
+        text: noteToSendBack,
+        id: window.noteId,
+      }, '*');
     }
   }
 
-  onKeyDown(event) {
-    // Flesh this out later
-    console.log(event.which);
+  onKeyDown(event, data, state) {
+    // Watch for tab
+    if (event.which !== 9) return;
+
+    event.preventDefault();
+
+    const newState = state
+      .transform()
+      .insertText('\t')
+      .apply();
+
+    return newState;
   }
 
   render() {
@@ -65,4 +76,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default StandardNotesEditor;
